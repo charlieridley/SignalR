@@ -18,9 +18,7 @@
         </dependencies>
     </metadata>
     <files>
-        <file src="Net40\Microsoft.AspNet.SignalR.SystemWeb.dll" target="lib\net40" />
-        <file src="Intellisense\Net40\Microsoft.AspNet.SignalR.SystemWeb.xml" target="lib\net40" />
         <file src="Net45\Microsoft.AspNet.SignalR.SystemWeb.dll" target="lib\net45" />
-        <file src="Intellisense\Net45\Microsoft.AspNet.SignalR.SystemWeb.xml" target="lib\net45" />
+        <file src="Net45\Microsoft.AspNet.SignalR.SystemWeb.xml" target="lib\net45" />
     </files>
 </package>

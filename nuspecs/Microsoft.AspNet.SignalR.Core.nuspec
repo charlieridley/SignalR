@@ -17,7 +17,7 @@
         </dependencies>
     </metadata>
     <files>
-        <file src="Net40\Microsoft.AspNet.SignalR.Core.dll" target="lib\net40" />
-        <file src="Intellisense\Net40\Microsoft.AspNet.SignalR.Core.xml" target="lib\net40" />
+        <file src="Net45\Microsoft.AspNet.SignalR.Core.dll" target="lib\net40" />
+        <file src="Net45\Microsoft.AspNet.SignalR.Core.xml" target="lib\net40" />
     </files>
 </package>
