@@ -3,6 +3,7 @@ using Microsoft.AspNet.SignalR.Client.Hubs;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNet.SignalR.Client.Transports;
 
 namespace Microsoft.AspNet.SignalR.Client.Samples
 {
@@ -14,15 +15,41 @@ namespace Microsoft.AspNet.SignalR.Client.Samples
             // RunInMemoryHost();
 #endif
 
-            // var hubConnection = new HubConnection("http://localhost:40476/");
+            //var hubConnection = new HubConnection("http://localhost:40476/");
 
             // RunDemoHub(hubConnection);
 
             // RunStreamingSample();
 
-            RunStatusHub();
+            //RunHeaderAuthSample(hubConnection);
 
-            Console.ReadKey();
+            //Console.ReadKey();
+
+            using (var mre = new ManualResetEvent(false))
+            {
+                // ServicePointManager.DefaultConnectionLimit = 2;
+                var iteration = 0;
+                var hubConnection = new HubConnection("http://localhost:40476/");
+                var proxy = hubConnection.CreateHubProxy("SimpleEchoHub");
+
+                proxy.On("AsyncEcho", id =>
+                {
+                    Console.WriteLine("Received id: {0}", id);
+                    mre.Set();
+                });
+
+                hubConnection.Start(new ServerSentEventsTransport()).Wait();
+
+                //while (true)
+                //{
+                    Console.WriteLine("Invoking AsyncEcho");
+                    proxy.Invoke("AsyncEcho", iteration++).Wait();
+                    Console.WriteLine("Invoked AsyncEcho");
+                    mre.WaitOne();
+                    Console.WriteLine("Completed");
+                    Console.ReadKey();
+                //}
+            }
         }
 
         private static void RunStatusHub()

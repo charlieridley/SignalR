@@ -550,6 +550,16 @@
              }
         };
 
+        proxies.simpleEchoHub = this.createHubProxy('simpleEchoHub'); 
+        proxies.simpleEchoHub.client = { };
+        proxies.simpleEchoHub.server = {
+            asyncEcho: function (str) {
+            /// <summary>Calls the AsyncEcho method on the server-side SimpleEchoHub hub.&#10;Returns a jQuery.Deferred() promise.</summary>
+            /// <param name=\"str\" type=\"String\">Server side type is System.String</param>
+                return proxies.simpleEchoHub.invoke.apply(proxies.simpleEchoHub, $.merge(["AsyncEcho"], $.makeArray(arguments)));
+             }
+        };
+
         proxies.StatusHub = this.createHubProxy('StatusHub'); 
         proxies.StatusHub.client = { };
         proxies.StatusHub.server = {

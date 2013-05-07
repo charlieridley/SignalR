@@ -331,6 +331,7 @@
       <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
     <Compile Include="Hubs\Test\NodeEvent.cs" />
+    <Compile Include="Hubs\Test\SimpleEchoHub.cs" />
     <Compile Include="Hubs\Test\StressHub.cs" />
     <Compile Include="Hubs\Test\TestHub.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -13,7 +13,14 @@ namespace Microsoft.AspNet.SignalR.Infrastructure
         public static Task<int> ReadAsync(this Stream stream, byte[] buffer)
         {
 #if NETFX_CORE || NET45
-            return stream.ReadAsync(buffer, 0, buffer.Length);
+            Microsoft.AspNet.SignalR.Client.Connection.ConnectionTrace("{0}", "\nBefore ReadAsync\n");
+            var retVal = stream.ReadAsync(buffer, 0, buffer.Length);
+            retVal.ContinueWith((task) =>
+            {
+                Microsoft.AspNet.SignalR.Client.Connection.ConnectionTrace("{0}", "\nAfter ReadAsync\n");
+            });
+
+            return retVal;
 #else
             return FromAsync(cb => stream.BeginRead(buffer, 0, buffer.Length, cb, null), ar => stream.EndRead(ar));
 #endif
@@ -23,7 +30,14 @@ namespace Microsoft.AspNet.SignalR.Infrastructure
         public static Task WriteAsync(this Stream stream, byte[] buffer)
         {
 #if NETFX_CORE || NET45
-            return stream.WriteAsync(buffer, 0, buffer.Length);
+            Microsoft.AspNet.SignalR.Client.Connection.ConnectionTrace("{0}", "\nBefore WriteAsync\n");
+            var retVal = stream.WriteAsync(buffer, 0, buffer.Length);
+            retVal.ContinueWith((task) =>
+            {
+                Microsoft.AspNet.SignalR.Client.Connection.ConnectionTrace("{0}", "\nAfter WriteAsync\n");
+            });
+
+            return retVal;
 #else
             return FromAsync(cb => stream.BeginWrite(buffer, 0, buffer.Length, cb, null), WrapEndWrite(stream));
 #endif

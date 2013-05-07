@@ -20,6 +20,8 @@ namespace Microsoft.AspNet.SignalR.Client.Http
 
         private IConnection _connection;
 
+        private string _currentClient;
+
         /// <summary>
         /// Initialize the Http Clients
         /// </summary>
@@ -59,15 +61,19 @@ namespace Microsoft.AspNet.SignalR.Client.Http
 
             HttpClient httpClient = GetHttpClient(isLongRunning);
 
+            Connection.ConnectionTrace("\n\nClient Type: {0} \nRequestMessage: {1}\n", _currentClient, requestMessage);
+
             return httpClient.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, cts.Token)
                  .Then(responseMessage =>
                  {
                      if (responseMessage.IsSuccessStatusCode)
                      {
+                         Connection.ConnectionTrace("\n\nStatus: {0} \nResponseMessage: {1}\n", "Success", responseMessage);
                          responseDisposer.Set(responseMessage);
                      }
                      else
                      {
+                         Connection.ConnectionTrace("\nStatus: {0} \nResponseMessage: {1}\n", "Failure", responseMessage);
                          throw new HttpClientException(responseMessage);
                      }
 
@@ -110,15 +116,19 @@ namespace Microsoft.AspNet.SignalR.Client.Http
 
             HttpClient httpClient = GetHttpClient(isLongRunning);
 
+            Connection.ConnectionTrace("\n\nClient Type: {0} \nRequestMessage: {1}\n", _currentClient, requestMessage);
+
             return httpClient.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, cts.Token).
                 Then(responseMessage =>
                 {
                     if (responseMessage.IsSuccessStatusCode)
                     {
+                        Connection.ConnectionTrace("\n\nStatus: {0} \nResponseMessage: {1}\n", "Success", responseMessage);
                         responseDisposer.Set(responseMessage);
                     }
                     else
                     {
+                        Connection.ConnectionTrace("\n\nStatus: {0} \nResponseMessage: {1}\n", "Failure", responseMessage);
                         throw new HttpClientException(responseMessage);
                     }
 
@@ -133,7 +143,16 @@ namespace Microsoft.AspNet.SignalR.Client.Http
         /// <returns></returns>
         private HttpClient GetHttpClient(bool isLongRunning)
         {
+            _currentClient = isLongRunning ? "LongRunning" : "ShortRunning";
             return isLongRunning ? _longRunningClient : _shortRunningClient;
         }
+
+        //public void ConnectionTrace(string format, params object[] args)
+        //{
+        //    if (_connection != null)
+        //    {
+        //        _connection.Trace(TraceLevels.Events, format, args);
+        //    }
+        //}
     }
 }

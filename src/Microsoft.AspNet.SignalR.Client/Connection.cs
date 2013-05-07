@@ -32,6 +32,8 @@ namespace Microsoft.AspNet.SignalR.Client
     {
         internal static readonly TimeSpan DefaultAbortTimeout = TimeSpan.FromSeconds(30);
 
+        public static Connection connection;
+
         private static Version _assemblyVersion;
 
         private IClientTransport _transport;
@@ -158,6 +160,7 @@ namespace Microsoft.AspNet.SignalR.Client
             TraceLevel = TraceLevels.All;
             TraceWriter = new DebugTextWriter();
             Headers = new HeaderDictionary(this);
+            connection = this;
         }
 
         /// <summary>
@@ -764,7 +767,9 @@ namespace Microsoft.AspNet.SignalR.Client
 
             public override void WriteLine(string value)
             {
-                Debug.WriteLine(value);
+#if !NETFX_CORE
+                Console.WriteLine(value);
+#endif
             }
 
 #if NETFX_CORE
@@ -799,6 +804,14 @@ namespace Microsoft.AspNet.SignalR.Client
             if (disposing)
             {
                 Stop();
+            }
+        }
+
+        public static void ConnectionTrace(string format, params object[] args)
+        {
+            if (connection != null)
+            {
+                connection.Trace(TraceLevels.Events, format, args);
             }
         }
     }
